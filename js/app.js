@@ -61,23 +61,73 @@ fetch('https://www.omdbapi.com/?apikey=51154c5d&t=F1 The Movie')
         document.getElementById("card8-text").innerText = movie.Plot
     });
 
+
+
+function openMovie(name) {
+    fetch(`https://www.omdbapi.com/?apikey=51154c5d&t=${name}`).then(res => res.json()).then(movie => {
+        let singlePage = document.getElementById("singlePage");
+        document.getElementById("cards").style.display = "none";
+        document.getElementById("resultsPage").style.display = "none";
+        singlePage.innerHTML = "";
+        singlePage.innerHTML =
+     `<div class="movie-container">
+    <div class="movie-card shadow">
+
+        <!-- Poster -->
+        <div class="poster">
+            <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'images/no-poster.png'}" />
+
+        </div>
+
+        <!-- Movie Details -->
+        <div class="movie-details">
+
+            <h1 class="movie-title">${movie.Title}</h1>
+
+            <p class="sub-info">
+                <span>${movie.Year}</span> • 
+                <span>${movie.Runtime}</span> • 
+                <span>${movie.Genre}</span>
+            </p>
+
+            <div class="rating-box">
+                 <span class="rating">${movie.imdbRating}</span> / 10
+            </div>
+
+            <p class="rating-value">Rating Value: ${movie.Ratings[0]?.Value || "N/A"}</p>
+
+            <h3 class="released">Released: ${movie.Released}</h3>
+
+            <p class="actors"><strong>Actors:</strong> ${movie.Actors}</p>
+
+            <p class="plot">${movie.Plot}</p>
+
+            <button class="btn btn-primary mt-3" onclick="goBack()">⬅ Back</button>
+
+        </div>
+    </div>
+</div>
+`
+    })
+}
+
 function Search() {
     let movieName = document.getElementById("search").value.trim();
 
     if (movieName == "") {
         alert("Enter movie name first");
     } else {
-        fetch(`http://www.omdbapi.com/?apikey=1c768e4f&s=${movieName}`)
+        fetch(`https://www.omdbapi.com/?apikey=1c768e4f&s=${movieName}`)
             .then(res => res.json())
             .then(movie => {
                 document.getElementById("cards").style.display = "none";
                 const resultsPage = document.getElementById("resultsPage");
                 let arraySize = movie.Search.length;
                 for (let i = 0; i < arraySize; i++) {
-
+     
                     resultsPage.innerHTML +=
-                     `<div class="result-item d-flex align-items-center py-3 border-bottom" onclick="openMovie('${movie.Search[i].imdbID}')">
-                        <img src="${movie.Search[i].Poster}" class="rounded me-3" width="60" height="90" alt="Poster">
+                        `<div class="result-item d-flex align-items-center py-3 border-bottom" onclick="openMovie('${movie.Search[i].Title}')">
+                        <img src="${movie.Search[i].Poster !== 'N/A' ? movie.Search[i].Poster : 'images/no-poster.png'}" class="rounded me-3" width="60" height="90" alt="Poster">
 
                          <div>
                            <h5 class="mb-1 fw-bold">${movie.Search[i].Title}</h5>
