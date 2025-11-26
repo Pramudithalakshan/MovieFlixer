@@ -1,9 +1,9 @@
 body {
     font-family: Arial, sans-serif;
-    background: #f0f2f5;
+    background: #192331;
     margin: 0;
     padding: 20px;
-   
+    color: white;
     justify-content: center;
 }
 
@@ -40,3 +40,19 @@ button:hover {
     font-family: sans-serif;
     font-size: 25px;
 }
+
+.movie-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;    
+    }
+
+    .movie-card img {
+        width: 500px;
+        height: auto;
+        border-radius: 8px;
+    }
+
+    .movie-card h1 {
+        margin: 0;
+    }
