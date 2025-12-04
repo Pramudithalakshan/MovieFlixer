@@ -68,6 +68,7 @@ function openMovie(name) {
         let singlePage = document.getElementById("singlePage");
         document.getElementById("cards").style.display = "none";
         document.getElementById("resultsPage").style.display = "none";
+        singlePage.style.display = "block";
         singlePage.innerHTML = "";
         singlePage.innerHTML =
      `<div class="movie-container">
@@ -111,30 +112,49 @@ function openMovie(name) {
     })
 }
 
+function goBack() {
+    const singlePage = document.getElementById("singlePage");
+    const cards = document.getElementById("cards");
+    const resultsPage = document.getElementById("resultsPage");
+
+    singlePage.innerHTML = "";
+    singlePage.style.display = "none";
+    cards.style.display = "block";
+}
+
 function Search() {
     let movieName = document.getElementById("search").value.trim();
 
     if (movieName == "") {
         alert("Enter movie name first");
     } else {
-        fetch(`https://www.omdbapi.com/?apikey=1c768e4f&s=${movieName}`)
+        const resultsPage = document.getElementById("resultsPage");
+        resultsPage.innerHTML = "";
+        resultsPage.style.display = "block";
+        document.getElementById("cards").style.display = "none";
+        document.getElementById("singlePage").style.display = "none";
+
+        fetch(`https://www.omdbapi.com/?apikey=1c768e4f&s=${encodeURIComponent(movieName)}`)
             .then(res => res.json())
             .then(movie => {
-                document.getElementById("cards").style.display = "none";
-                const resultsPage = document.getElementById("resultsPage");
+                if (!movie || movie.Response === "False" || !movie.Search) {
+                    resultsPage.innerHTML = `<p class=\"text-light\">No results found for '${movieName}'.</p>`;
+                    return;
+                }
+
                 let arraySize = movie.Search.length;
                 for (let i = 0; i < arraySize; i++) {
-     
+                    const item = movie.Search[i];
+                    const safeTitle = item.Title.replace(/'/g, "\\'");
                     resultsPage.innerHTML +=
-                        `<div class="result-item d-flex align-items-center py-3 border-bottom" onclick="openMovie('${movie.Search[i].Title}')">
-                        <img src="${movie.Search[i].Poster !== 'N/A' ? movie.Search[i].Poster : 'images/no-poster.png'}" class="rounded me-3" width="60" height="90" alt="Poster">
+                        `<div class="result-item d-flex align-items-center py-3 border-bottom" onclick="openMovie('${safeTitle}')">
+                        <img src="${item.Poster !== 'N/A' ? item.Poster : 'images/no-poster.png'}" class="rounded me-3" width="60" height="90" alt="Poster">
 
                          <div>
-                           <h5 class="mb-1 fw-bold">${movie.Search[i].Title}</h5>
-                           <h5 >${movie.Search[i].Year}</h5>
+                           <h5 class="mb-1 fw-bold">${item.Title}</h5>
+                           <h5 >${item.Year}</h5>
                          </div>
-                     </div>
-                    `;
+                     </div>`;
                 }
             });
     }
