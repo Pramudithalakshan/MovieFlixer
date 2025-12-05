@@ -115,7 +115,6 @@ function openMovie(name) {
 function goBack() {
     const singlePage = document.getElementById("singlePage");
     const cards = document.getElementById("cards");
-    const resultsPage = document.getElementById("resultsPage");
 
     singlePage.innerHTML = "";
     singlePage.style.display = "none";
